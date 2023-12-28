@@ -1,6 +1,6 @@
 import { Beer } from './beer';
 import joi from 'joi';
-import { Pub } from './pubs';
+import { Pub } from './pub';
 
 export type UserLogin = {
   password: string;

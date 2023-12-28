@@ -12,5 +12,8 @@ export default {
     'src/routers/user.routes.ts',
     'src/routers/beer.routes.ts',
     'src/routers/pub.routes.ts',
+    'src/repos/user/user.mongo.model.ts',
+    'src/repos/pub/pub.mongo.model.ts',
+    'src/repos/beer/beer.mongo.model.ts',
   ],
 };

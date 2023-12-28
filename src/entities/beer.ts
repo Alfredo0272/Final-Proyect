@@ -1,5 +1,5 @@
 import { ImgData } from '../types/img.data.js';
-import { Pub } from './pubs.js';
+import { Pub } from './pub.js';
 import { User } from './user.js';
 
 export type Beer = {
