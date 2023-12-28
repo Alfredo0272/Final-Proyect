@@ -8,7 +8,9 @@ export default {
   coveragePathIgnorePatterns: [
     'src/app.ts',
     'src/index.ts',
+    'src/entities.*',
     'src/routers/user.routes.ts',
     'src/routers/beer.routes.ts',
+    'src/routers/pub.routes.ts',
   ],
 };

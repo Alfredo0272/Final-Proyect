@@ -1,5 +1,6 @@
 import { Beer } from './beer';
 import joi from 'joi';
+import { Pub } from './pubs';
 
 export type UserLogin = {
   password: string;
@@ -13,6 +14,7 @@ export type User = UserLogin & {
   age: number;
   userName: string;
   probada: Beer[];
+  visitado: Pub[];
   role: 'Admin' | 'User';
 };
 
