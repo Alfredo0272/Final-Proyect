@@ -96,19 +96,14 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
     }
   }
 
-  async addBeer(beer: Beer, userId: User['id']): Promise<User> {
+  async addBeer(beer: Beer, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $push: { probada: beer } },
       { new: true }
     ).exec();
-
     if (!updatedUser) {
-      throw new HttpError(
-        404,
-        'Not Found in mongo repo',
-        'Update not possible'
-      );
+      throw new HttpError(404, 'Not Found in mongo repo', 'User not found');
     }
 
     return updatedUser;
