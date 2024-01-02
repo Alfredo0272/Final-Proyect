@@ -30,3 +30,12 @@ export const pubSchema = new Schema<Pub>({
   },
   beers: [{ type: Schema.Types.ObjectId, ref: 'Beer' }],
 });
+
+pubSchema.set('toJSON', {
+  transform(_document, returnedObject) {
+    returnedObject.id = returnedObject._id;
+    delete returnedObject._id;
+    delete returnedObject.__v;
+    delete returnedObject.password;
+  },
+});
