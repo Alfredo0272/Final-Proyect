@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { Pub } from '../../entities/pub';
+import { Pub } from '../../entities/pub.js';
 
 export const pubSchema = new Schema<Pub>({
   logo: {

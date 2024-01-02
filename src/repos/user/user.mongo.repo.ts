@@ -1,11 +1,11 @@
 import createDebug from 'debug';
-import { UserRepository } from './user.repo';
-import { User, UserLogin } from '../../entities/user';
-import { Beer } from '../../entities/beer';
-import { Pub } from '../../entities/pub';
-import { UserModel } from './user.mongo.model';
-import { HttpError } from '../../types/http.error';
-import { Auth } from '../../services/auth';
+import { UserRepository } from './user.repo.js';
+import { User, UserLogin } from '../../entities/user.js';
+import { Beer } from '../../entities/beer.js';
+import { Pub } from '../../entities/pub.js';
+import { UserModel } from './user.mongo.model.js';
+import { HttpError } from '../../types/http.error.js';
+import { Auth } from '../../services/auth.js';
 
 const debug = createDebug('W9Final:Users:mongo:repo');
 
