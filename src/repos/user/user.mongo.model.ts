@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { User } from '../../entities/user';
+import { User } from '../../entities/user.model.js';
 
 export const userSchema = new Schema<User>({
   name: {
@@ -47,7 +47,7 @@ userSchema.set('toJSON', {
     returnedObject.id = returnedObject._id;
     delete returnedObject._id;
     delete returnedObject.__v;
-    delete returnedObject.passwd;
+    delete returnedObject.password;
   },
 });
 

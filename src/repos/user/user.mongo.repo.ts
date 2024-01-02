@@ -1,12 +1,11 @@
-/* eslint-disable no-unused-vars */
 import createDebug from 'debug';
-import { UserRepository } from './user.repo';
-import { User, UserLogin } from '../../entities/user';
-import { Beer } from '../../entities/beer';
-import { Pub } from '../../entities/pubs';
-import { UserModel } from './user.mongo.model';
-import { HttpError } from '../../types/http.error';
-import { Auth } from '../../services/auth';
+import { UserRepository } from './user.repo.js';
+import { User, UserLogin } from '../../entities/user.model.js';
+import { Beer } from '../../entities/beer.model.js';
+import { Pub } from '../../entities/pub.model.js';
+import { UserModel } from './user.mongo.model.js';
+import { HttpError } from '../../types/http.error.js';
+import { Auth } from '../../services/auth.js';
 
 const debug = createDebug('W9Final:Users:mongo:repo');
 
@@ -24,58 +23,135 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
     return result;
   }
 
-  create(_newItem: Omit<User, 'id'>): Promise<User> {
-    throw new Error('Method not implemented.');
+  async create(newItem: Omit<User, 'id'>): Promise<User> {
+    newItem.password = await Auth.hash(newItem.password);
+    const result: User = await UserModel.create(newItem);
+    return result;
   }
 
-  getAll(): Promise<User[]> {
-    throw new Error('Method not implemented.');
+  async getAll(): Promise<User[]> {
+    const result = await UserModel.find()
+      .populate('probada', 'visitado')
+      .exec();
+    if (!result)
+      throw new HttpError(404, 'Not Found', 'getAll method not possible');
+    return result;
   }
 
-  getById(_id: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async getById(id: string): Promise<User> {
+    const data = await UserModel.findById(id)
+      .populate('probada', 'visitado')
+      .exec();
+    if (!data) {
+      throw new HttpError(404, 'Not Found', 'User not found in file system', {
+        cause: 'Trying findById',
+      });
+    }
+
+    return data;
   }
 
-  search({
+  async search({
     key,
     value,
   }: {
-    key:
-      | keyof UserLogin
-      | 'id'
-      | 'name'
-      | 'surname'
-      | 'age'
-      | 'userName'
-      | 'probada'
-      | 'visitado'
-      | 'role';
-    value: unknown;
+    key: keyof User;
+    value: any;
   }): Promise<User[]> {
-    throw new Error('Method not implemented.');
+    const result = await UserModel.find({ [key]: value })
+      .populate(
+        'probada',
+        {
+          beer: 0,
+        },
+        'visitado',
+        {
+          pub: 0,
+        }
+      )
+      .exec();
+
+    return result;
   }
 
-  update(_id: string, _updatedItem: Partial<User>): Promise<User> {
-    throw new Error('Method not implemented.');
+  async update(id: string, newData: Partial<User>): Promise<User> {
+    const data = await UserModel.findByIdAndUpdate(id, newData, {
+      new: true,
+    })
+      .populate('probada', 'visitado')
+      .exec();
+    if (!data)
+      throw new HttpError(404, 'Not Found', 'User not found in file system', {
+        cause: 'Trying findByIdAndUpdate',
+      });
+    return data;
   }
 
-  delete(_id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(id: string): Promise<void> {
+    const result = await UserModel.findByIdAndDelete(id)
+      .populate('probada', 'visitado')
+      .exec();
+    if (!result) {
+      throw new HttpError(404, 'Not Found', 'Delete not possible');
+    }
   }
 
-  addBeer(_beer: Beer, _userId: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async addBeer(beer: Beer, userId: string): Promise<User> {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $push: { probada: beer } },
+      { new: true }
+    ).exec();
+    if (!updatedUser) {
+      throw new HttpError(404, 'Not Found in mongo repo', 'User not found');
+    }
+
+    return updatedUser;
   }
 
-  addPub(_pub: Pub, _userId: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async addPub(pub: Pub, userId: string): Promise<User> {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $push: { probada: pub } },
+      { new: true }
+    ).exec();
+
+    if (!updatedUser) {
+      throw new HttpError(
+        404,
+        'Not Found in mongo repo',
+        'Update not possible'
+      );
+    }
+
+    return updatedUser;
   }
 
-  removeBeer(_beer: Beer, _userId: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async removeBeer(beer: Beer, userId: User['id']): Promise<User> {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $pull: { probada: beer.id } },
+      { new: true }
+    ).exec();
+
+    if (!updatedUser) {
+      throw new HttpError(404, 'Not Found', 'Update not possible');
+    }
+
+    return updatedUser;
   }
 
-  removePub(_pub: Pub, _userId: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async removePub(pub: Pub, userId: string): Promise<User> {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $pull: { probada: pub.id } },
+      { new: true }
+    ).exec();
+
+    if (!updatedUser) {
+      throw new HttpError(404, 'Not Found', 'Update not possible');
+    }
+
+    return updatedUser;
   }
 }
