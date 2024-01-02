@@ -1,6 +1,6 @@
-import { Beer } from '../../entities/beer';
-import { Pub } from '../../entities/pub';
-import { User } from '../../entities/user';
+import { Beer } from '../../entities/beer.model';
+import { Pub } from '../../entities/pub.model';
+import { User } from '../../entities/user.model';
 import { Auth } from '../../services/auth';
 import { HttpError } from '../../types/http.error';
 import { UserModel } from './user.mongo.model';

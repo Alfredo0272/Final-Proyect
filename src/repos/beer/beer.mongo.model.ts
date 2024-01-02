@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { Beer } from '../../entities/beer.js';
+import { Beer } from '../../entities/beer.model.js';
 
 export const beerSchema = new Schema<Beer>({
   name: {

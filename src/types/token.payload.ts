@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { User } from '../entities/user.js';
+import { User } from '../entities/user.model.js';
 
 export type TokenPayload = {
   id: User['id'];

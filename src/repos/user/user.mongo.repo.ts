@@ -1,8 +1,8 @@
 import createDebug from 'debug';
 import { UserRepository } from './user.repo.js';
-import { User, UserLogin } from '../../entities/user.js';
-import { Beer } from '../../entities/beer.js';
-import { Pub } from '../../entities/pub.js';
+import { User, UserLogin } from '../../entities/user.model.js';
+import { Beer } from '../../entities/beer.model.js';
+import { Pub } from '../../entities/pub.model.js';
 import { UserModel } from './user.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 import { Auth } from '../../services/auth.js';
