@@ -17,7 +17,7 @@ export class BeerMongoRepo implements Repository<Beer> {
   async getAll(): Promise<Beer[]> {
     const result = await BeerModel.find().populate('author').exec();
     if (!result)
-      throw new HttpError(404, 'Not Found', 'getAll nethod not possible');
+      throw new HttpError(404, 'Not Found', 'Beer not found in file sistem');
     return result;
   }
 
@@ -57,7 +57,7 @@ export class BeerMongoRepo implements Repository<Beer> {
     const result = await BeerModel.findByIdAndUpdate(id, updatedItem, {
       new: true,
     })
-      .populate('User', { name: 1 })
+      .populate('author', { id: 1 })
       .exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
 
@@ -66,7 +66,7 @@ export class BeerMongoRepo implements Repository<Beer> {
 
   async delete(id: string): Promise<void> {
     const result = await BeerModel.findByIdAndDelete(id)
-      .populate('author', { beer: 0 })
+      .populate('author')
       .exec();
     if (!result) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');

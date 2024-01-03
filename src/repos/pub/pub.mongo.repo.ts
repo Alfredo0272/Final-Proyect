@@ -47,7 +47,9 @@ export class PubMongoRepo implements PubRepository<Pub, Beer> {
   async update(id: string, newData: Partial<Pub>): Promise<Pub> {
     const data = await PubModel.findByIdAndUpdate(id, newData, {
       new: true,
-    }).exec();
+    })
+      .populate('beers', { beer: 1 })
+      .exec();
     if (!data)
       throw new HttpError(404, 'Not Found', 'Pub not found in file system', {
         cause: 'Trying findByIdAndUpdate',
@@ -56,7 +58,9 @@ export class PubMongoRepo implements PubRepository<Pub, Beer> {
   }
 
   async delete(id: string): Promise<void> {
-    const result = await PubModel.findByIdAndDelete(id).exec();
+    const result = await PubModel.findByIdAndDelete(id)
+      .populate('beers')
+      .exec();
     if (!result)
       throw new HttpError(404, 'Not Found', 'Pub not found in file system', {
         cause: 'Fail to delete',
