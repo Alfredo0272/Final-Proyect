@@ -69,13 +69,11 @@ describe('Given UserMongoRepo class', () => {
       expect(result).toEqual(user);
     });
     test('should return a user object when a valid id is passed', async () => {
-      const repo = new UserMongoRepo();
       const result = await repo.getById(id);
       expect(UserModel.findById).toHaveBeenCalledWith(id);
       expect(result).toEqual(user);
     });
     test('should return all users', async () => {
-      const repo = new UserMongoRepo();
       const result = await repo.getAll();
       expect(UserModel.find).toHaveBeenCalledWith();
       expect(result).toEqual(user);
