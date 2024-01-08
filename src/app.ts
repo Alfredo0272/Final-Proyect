@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import createDebug from 'debug';
-import { userRouter } from './routes/user.reoutes';
+import { userRouter } from './routes/user.routes';
 import { errorMiddleware } from './middleware/error.middleware';
 
 const debug = createDebug('W9Final:app');
