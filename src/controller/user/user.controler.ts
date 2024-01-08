@@ -56,7 +56,7 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      if (user.probada.includes(beer)) {
+      if (user.probada.find((tastedBeer) => tastedBeer.id === beer.id)) {
         throw new HttpError(
           409,
           'Conflict',
@@ -88,7 +88,7 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Pub not found');
       }
 
-      if (user.visitado.includes(pub)) {
+      if (user.visitado.find((visitedPubs) => visitedPubs.id === pub.id)) {
         throw new HttpError(
           409,
           'Conflict',
@@ -121,11 +121,11 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      if (user.probada.includes(beer)) {
+      if (!user.probada.find((tastedBeer) => tastedBeer.id === beer.id)) {
         throw new HttpError(
-          404,
-          'Beer Found',
-          'Update not possible, Beer already erase'
+          409,
+          'Conflict',
+          'Update not possible, Beer already erased'
         );
       }
 
@@ -140,25 +140,25 @@ export class UsersController extends Controller<User> {
   async removePub(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await this.repo.getById(req.body.id);
-      const Pub = await this.pubRepo.getById(req.params.id);
+      const pub = await this.pubRepo.getById(req.params.id);
 
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
 
-      if (!Pub) {
+      if (!pub) {
         throw new HttpError(404, 'Not Found', 'Pub not found');
       }
 
-      if (user.visitado.includes(Pub)) {
+      if (!user.visitado.find((visitedPub) => visitedPub.id === pub.id)) {
         throw new HttpError(
           404,
           'Pub Found',
-          'Update not possible, Pub already erase'
+          'Update not possible, Pub already erased'
         );
       }
 
-      const result = await this.repo.removePub(await Pub, user.id);
+      const result = await this.repo.removePub(await pub, user.id);
 
       res.json(result);
     } catch (error) {
