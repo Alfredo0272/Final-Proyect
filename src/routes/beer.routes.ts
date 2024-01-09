@@ -7,7 +7,7 @@ import { FileInterceptor } from '../middleware/file.interceptor.js';
 
 const debug = createDebug('W9Final:beer:router');
 
-export const beersRouter = createRouter();
+export const beerRouter = createRouter();
 debug('Starting');
 
 const repo = new BeerMongoRepo();
@@ -15,23 +15,23 @@ const controller = new BeerController(repo);
 const fileInterceptor = new FileInterceptor();
 // Const interceptor = new Interceptor();
 
-beersRouter.post(
+beerRouter.post(
   '/:id',
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.createBeer.bind(controller)
 );
-beersRouter.get(
+beerRouter.get(
   '/',
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.getAll.bind(controller)
 );
-beersRouter.get(
+beerRouter.get(
   '/:id',
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.getById.bind(controller)
 );
 
-beersRouter.delete(
+beerRouter.delete(
   '/delBeer/:id',
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.delete.bind(controller)

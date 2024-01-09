@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { Pub } from '../../entities/pub.model';
 
-export const pubSchema = new Schema({
+export const pubSchema = new Schema<Pub>({
   logo: {
     publicId: String,
     size: Number,

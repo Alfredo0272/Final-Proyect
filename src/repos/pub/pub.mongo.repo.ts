@@ -5,7 +5,7 @@ import { PubRepository } from './pub.repo';
 import { HttpError } from '../../types/http.error';
 import { PubModel } from './pub.mongo.model';
 
-const debug = createDebug('W9Final:Users:mongo:repo');
+const debug = createDebug('W9Final:Pubs:mongo:repo');
 export class PubMongoRepo implements PubRepository<Pub, Beer> {
   constructor() {
     debug('instantiated');

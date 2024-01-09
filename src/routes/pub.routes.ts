@@ -5,8 +5,9 @@ import { PubController } from '../controller/pub/pub.controller';
 import { FileInterceptor } from '../middleware/file.interceptor';
 import { AuthInterceptor } from '../middleware/auth.interceptor';
 
-const debug = createDebug('W9Final:user:router');
+const debug = createDebug('W9Final:Pub:router');
 export const pubRouter = createRouter();
+
 debug('Starting');
 const repo = new PubMongoRepo();
 const controller = new PubController(repo);
