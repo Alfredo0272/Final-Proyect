@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
-import { Pub } from '../../entities/pub.model.js';
 
-export const pubSchema = new Schema<Pub>({
+export const pubSchema = new Schema({
   logo: {
     publicId: String,
     size: Number,
@@ -31,7 +30,7 @@ export const pubSchema = new Schema<Pub>({
   beers: [{ type: Schema.Types.ObjectId, ref: 'Beer' }],
 });
 
-export const PubModel = model('Pubs', pubSchema, 'Pub');
+export const PubModel = model('Pub', pubSchema, 'pub');
 
 pubSchema.set('toJSON', {
   transform(_document, returnedObject) {

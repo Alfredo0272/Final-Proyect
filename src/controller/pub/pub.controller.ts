@@ -35,6 +35,7 @@ export class PubController extends Controller<Pub> {
     try {
       const pub = await this.repo.getById(req.body.id);
       const beer = await this.beerRepo.getById(req.params.id);
+
       if (!pub) {
         throw new HttpError(404, 'Not Found', 'Pub not found');
       }
@@ -48,7 +49,8 @@ export class PubController extends Controller<Pub> {
       }
 
       const updatedPub = await this.repo.addBeer(beer, pub.id);
-
+      await beer.pubs.push(pub);
+      await this.beerRepo.update(beer.id, beer);
       if (!updatedPub) {
         throw new HttpError(404, 'Not Found', 'Update not possible');
       }
@@ -59,7 +61,7 @@ export class PubController extends Controller<Pub> {
     }
   }
 
-  async removeBeer(req: Request, res: Response, next: NextFunction) {
+  async removePubBeer(req: Request, res: Response, next: NextFunction) {
     try {
       const pub = await this.repo.getById(req.body.id);
       const beer = await this.beerRepo.getById(req.params.id);
@@ -80,9 +82,11 @@ export class PubController extends Controller<Pub> {
         );
       }
 
-      const result = await this.repo.removeBeer(await beer, pub.id);
-
-      res.json(result);
+      const beerPubs = beer.pubs.findIndex((item) => item.id === pub.id);
+      beer.pubs.splice(beerPubs, 1);
+      const updatedBeer = await this.beerRepo.update(beer.id, beer);
+      const result = await this.repo.removeBeer(beer, pub.id);
+      res.json({ pub: result, beer: updatedBeer });
     } catch (error) {
       next(error);
     }
