@@ -29,4 +29,8 @@ export const userJoiSchema = joi.object<User>({
     .pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
     .required(),
   age: joi.number().min(18).max(100),
+  name: joi.string().required(),
+  surname: joi.string().required(),
+  userName: joi.string().required(),
+  role: joi.string().valid('Admin', 'User').required(),
 });

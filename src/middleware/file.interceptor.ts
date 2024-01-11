@@ -7,7 +7,7 @@ export class FileInterceptor {
     const options: multer.Options = {
       // Dest: 'uploads',
       storage: multer.diskStorage({
-        destination: 'uploads',
+        destination: './public/uploads',
         filename(_req, file, callback) {
           const prefix = crypto.randomUUID();
           callback(null, prefix + '-' + file.originalname);

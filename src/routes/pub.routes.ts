@@ -1,9 +1,9 @@
 import { Router as createRouter } from 'express';
 import createDebug from 'debug';
-import { PubMongoRepo } from '../repos/pub/pub.mongo.repo';
-import { PubController } from '../controller/pub/pub.controller';
-import { FileInterceptor } from '../middleware/file.interceptor';
-import { AuthInterceptor } from '../middleware/auth.interceptor';
+import { PubMongoRepo } from '../repos/pub/pub.mongo.repo.js';
+import { PubController } from '../controller/pub/pub.controller.js';
+import { FileInterceptor } from '../middleware/file.interceptor.js';
+import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 
 const debug = createDebug('W9Final:Pub:router');
 export const pubRouter = createRouter();

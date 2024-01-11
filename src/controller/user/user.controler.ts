@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import createDebug from 'debug';
-import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo';
-import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
-import { Controller } from '../controller';
-import { User } from '../../entities/user.model';
-import { UserMongoRepo } from '../../repos/user/user.mongo.repo';
-import { LoginResponse } from '../../types/login.response';
-import { Auth } from '../../services/auth';
-import { HttpError } from '../../types/http.error';
+import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo.js';
+import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo.js';
+import { Controller } from '../controller.js';
+import { User } from '../../entities/user.model.js';
+import { UserMongoRepo } from '../../repos/user/user.mongo.repo.js';
+import { LoginResponse } from '../../types/login.response.js';
+import { Auth } from '../../services/auth.js';
+import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:users:controller');
 

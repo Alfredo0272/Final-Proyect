@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import createDebug from 'debug';
-import { Controller } from '../controller';
-import { Pub } from '../../entities/pub.model';
-import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
-import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo';
-import { HttpError } from '../../types/http.error';
+import { Controller } from '../controller.js';
+import { Pub } from '../../entities/pub.model.js';
+import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo.js';
+import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo.js';
+import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:pubs:controller');
 
@@ -46,6 +46,10 @@ export class PubController extends Controller<Pub> {
 
       if (pub.beers.find((tapBeers) => tapBeers.id === beer.id)) {
         throw new HttpError(409, 'Conflict', 'Beer already in the tap beers');
+      }
+
+      if (pub.beers.length >= pub.taps) {
+        throw new HttpError(400, 'Bad Request', 'The pub is at full capacity');
       }
 
       const updatedPub = await this.repo.addBeer(beer, pub.id);
