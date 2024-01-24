@@ -67,7 +67,10 @@ describe('Given PubController class', () => {
 
       await controller.addPubBeer(mockRequest, mockResponse, mockNext);
 
-      expect(mockRepo.getById).toHaveBeenCalledWith('validPubID');
+      expect(mockRepo.getById).toHaveBeenCalledWith({
+        id: 'validPubID',
+        logo: { url: 'validImageUrl' },
+      });
       expect(mockBeerRepo.getById).toHaveBeenCalledWith('validBeerID');
       expect(mockRepo.addBeer).toHaveBeenCalledWith(mockBeer, 'validPubID');
       expect(mockBeerRepo.update).toHaveBeenCalledWith('validBeerID', mockBeer);

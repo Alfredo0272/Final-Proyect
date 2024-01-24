@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import mongoose, { Error } from 'mongoose';
 import { HttpError } from '../types/http.error.js';
+import mongoose, { mongo } from 'mongoose';
 import createDebug from 'debug';
-
 const debug = createDebug('W9Final:error:middleware');
 
 debug('Starting');
 debug('Hello From Errors');
-export const errorMiddleware = (
+export const handleError = (
   error: Error,
   _req: Request,
   res: Response,
@@ -16,23 +15,38 @@ export const errorMiddleware = (
   debug('Executed');
 
   if (error instanceof HttpError) {
+    console.error(error.status, error.statusMessage, error.message);
     res.status(error.status);
-    res.statusMessage = (error as HttpError).statusMessage;
-  } else if (error instanceof RangeError) {
-    res.status(416);
-    res.statusMessage = 'Request Range Not Satisfiable';
-  } else if (error instanceof Error.ValidationError) {
-    res.status(400);
-    res.statusMessage = 'Bad Request';
-  } else if (error instanceof mongoose.mongo.MongoServerError) {
-    res.status(406);
-    res.statusMessage = 'Not accepted';
-  } else {
-    res.status(500);
-    res.statusMessage = 'Internal Server Error';
+    res.statusMessage = error.message;
+    res.send({
+      status: error.status,
+    });
+    return;
   }
 
-  res.json({});
-  debug((error as Error).name);
-  debug((error as Error).message);
+  if (error instanceof mongoose.Error.ValidationError) {
+    console.error('400 Bad Request', error.message);
+    res.status(400);
+    res.statusMessage = 'Bad Request';
+    res.send({
+      status: '400 Bad Request',
+    });
+    return;
+  }
+
+  if (error instanceof mongo.MongoServerError) {
+    console.error('406 Not accepted', error.message);
+    res.status(406);
+    res.statusMessage = 'Not accepted';
+    res.send({
+      status: '406 Not accepted',
+    });
+    return;
+  }
+
+  console.error(error);
+  res.status(500);
+  res.send({
+    error: error.message,
+  });
 };

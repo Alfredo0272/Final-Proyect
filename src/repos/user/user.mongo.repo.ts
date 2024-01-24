@@ -19,7 +19,11 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
       .populate('probada', 'visitado')
       .exec();
     if (!result || !(await Auth.compare(loginUser.password, result.password)))
-      throw new HttpError(401, 'Unauthorized');
+      throw new HttpError(
+        401,
+        'No se puede hacer login con Token',
+        'Unauthorized'
+      );
     return result;
   }
 
@@ -97,6 +101,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   }
 
   async addBeer(beer: Beer, userId: string): Promise<User> {
+    console.log(beer);
+    console.log(userId);
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $push: { probada: beer } },

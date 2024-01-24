@@ -33,7 +33,7 @@ export class PubController extends Controller<Pub> {
 
   async addPubBeer(req: Request, res: Response, next: NextFunction) {
     try {
-      const pub = await this.repo.getById(req.body.id);
+      const pub = await this.repo.getById(req.body);
       const beer = await this.beerRepo.getById(req.params.id);
 
       if (!pub) {
