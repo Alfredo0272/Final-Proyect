@@ -3,7 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import createDebug from 'debug';
 import { userRouter } from './routes/user.routes.js';
-import { errorMiddleware } from './middleware/error.middleware.js';
+import { handleError } from './middleware/error.middleware.js';
 import { beerRouter } from './routes/beer.routes.js';
 import { pubRouter } from './routes/pub.routes.js';
 
@@ -18,4 +18,4 @@ app.use(express.static('public'));
 app.use('/user', userRouter);
 app.use('/beer', beerRouter);
 app.use('/pub', pubRouter);
-app.use(errorMiddleware);
+app.use(handleError);
