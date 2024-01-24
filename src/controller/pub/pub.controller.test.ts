@@ -1,5 +1,6 @@
 import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
 import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo';
+import { HttpError } from '../../types/http.error';
 import { PubController } from './pub.controller';
 import { Request, Response, NextFunction } from 'express';
 
@@ -96,6 +97,180 @@ describe('Given PubController class', () => {
       expect(mockBeerRepo.getById).toHaveBeenCalledWith('validBeerID');
       expect(mockRepo.removeBeer).toHaveBeenCalledWith(mockBeer, 'validPubID');
       expect(mockBeerRepo.update).toHaveBeenCalledWith('validBeerID', mockBeer);
+    });
+  });
+  describe('When we instantiate it with errors', () => {
+    test('should throw a HttpError with status code 406 if no image file is provided', async () => {
+      const mockRequest: Request = {
+        params: { id: 'validUserID' },
+        file: undefined,
+        body: { name: 'Pub Name' },
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+        status: jest.fn(),
+        statusMessage: '',
+      } as unknown as Response;
+      const mockNext = jest.fn();
+      await controller.createPub(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(406, 'Not Acceptable', 'Invalid multer file')
+      );
+    });
+    test('should throw HttpError with status 404 when Pub is not found', async () => {
+      const mockPubRepo = {
+        getById: jest.fn().mockResolvedValue(null),
+      } as unknown as PubMongoRepo;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue({ id: 'validBeerId' }),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockPubRepo);
+      controller.beerRepo = mockBeerRepo;
+      await controller.addPubBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(404, 'Not Found', 'Pub not found')
+      );
+    });
+    test('should throw HttpError with status 404 when beer is not found', async () => {
+      const mockPubRepo = {
+        getById: jest
+          .fn()
+          .mockResolvedValue({ id: 'validPubID', beers: [], taps: 2 }),
+      } as unknown as PubMongoRepo;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue(null),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockPubRepo);
+      controller.beerRepo = mockBeerRepo;
+      await controller.addPubBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(404, 'Not Found', 'Beer not found')
+      );
+    });
+    test('should throw HttpError with status 409 if beer is already in the tap beers', async () => {
+      const mockPub = {
+        id: 'validUserID',
+        beers: [{ id: 'existingBeerID' }],
+      };
+      const mockBeer = { id: 'existingBeerID' };
+      const mockRepo = {
+        getById: jest.fn().mockResolvedValue(mockPub),
+        addPubBeer: jest.fn(),
+      } as unknown as jest.Mocked<PubMongoRepo>;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue(mockBeer),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockRepo);
+      controller.beerRepo = mockBeerRepo;
+      try {
+        await controller.addPubBeer(mockRequest, mockResponse, mockNext);
+      } catch (error) {
+        expect(mockNext).toHaveBeenCalledWith(
+          new HttpError(409, 'Conflict', 'Beer already in the tap beers')
+        );
+        expect(mockNext).toHaveBeenCalledWith(error);
+      }
+    });
+    test('should throw HttpError with status 400 when pub is at full capacity', async () => {
+      const mockPub = {
+        id: 'validPubID',
+        beers: [{ id: 'existingBeerID' }],
+        taps: 1,
+      };
+      const mockBeer = { id: 'validBeerID' };
+      const mockRepo = {
+        getById: jest.fn().mockResolvedValue(mockPub),
+      } as unknown as jest.Mocked<PubMongoRepo>;
+      const controller = new PubController(mockRepo);
+      controller.beerRepo = {
+        getById: jest.fn().mockResolvedValue(mockBeer),
+      } as unknown as BeerMongoRepo;
+      await controller.addPubBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(400, 'Bad Request', 'The pub is at full capacity')
+      );
+    });
+    test('should throw a HttpError with status code 404 when update is not possible', async () => {
+      const mockPub = { id: '1', beers: [], taps: 2 };
+      const mockBeer = { id: '1', pubs: [] };
+      const mockRequest = {
+        body: mockPub,
+        params: { id: mockBeer.id },
+      } as unknown as Request;
+      const mockResponse = {} as Response;
+      const mockNext = jest.fn();
+      const mockPubRepo = {
+        getById: jest.fn().mockResolvedValue(mockPub),
+        addBeer: jest.fn().mockResolvedValue(null),
+      } as unknown as PubMongoRepo;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue(mockBeer),
+        update: jest.fn(),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockPubRepo);
+      controller.beerRepo = mockBeerRepo;
+      await controller.addPubBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(404, 'Not Found', 'Update not possible')
+      );
+    });
+    test('should throw HttpError with status 404 when Pub is not found', async () => {
+      const mockPubRepo = {
+        getById: jest.fn().mockResolvedValue(null),
+      } as unknown as PubMongoRepo;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue({ id: 'validBeerId' }),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockPubRepo);
+      controller.beerRepo = mockBeerRepo;
+      await controller.removePubBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(404, 'Not Found', 'Pub not found')
+      );
+    });
+    test('should throw HttpError with status 404 when beer is not found', async () => {
+      const mockPubRepo = {
+        getById: jest
+          .fn()
+          .mockResolvedValue({ id: 'validPubID', beers: [], taps: 2 }),
+      } as unknown as PubMongoRepo;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue(null),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockPubRepo);
+      controller.beerRepo = mockBeerRepo;
+      await controller.removePubBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        new HttpError(404, 'Not Found', 'Beer not found')
+      );
+    });
+    test('should throw HttpError with status 404 when beer is not found', async () => {
+      const mockPub = {
+        id: 'validUserID',
+        beers: [],
+      };
+      const mockBeer = { id: 'existingBeerID' };
+      const mockRepo = {
+        getById: jest.fn().mockResolvedValue(mockPub),
+        removeBeer: jest.fn(),
+      } as unknown as jest.Mocked<PubMongoRepo>;
+      const mockBeerRepo = {
+        getById: jest.fn().mockResolvedValue(mockBeer),
+      } as unknown as BeerMongoRepo;
+      const controller = new PubController(mockRepo);
+      controller.beerRepo = mockBeerRepo;
+      try {
+        await controller.removePubBeer(mockRequest, mockResponse, mockNext);
+      } catch (error) {
+        expect(mockNext).toHaveBeenCalledWith(
+          new HttpError(
+            409,
+            'Conflict',
+            'Update not possible, Beer already erased'
+          )
+        );
+        expect(mockNext).toHaveBeenCalledWith(error);
+      }
     });
   });
 });
