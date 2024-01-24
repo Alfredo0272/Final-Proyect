@@ -131,17 +131,17 @@ describe('Given PubController class', () => {
         new HttpError(404, 'Not Found', 'Pub not found')
       );
     });
-    test('should throw HttpError with status 404 when beer is not found', async () => {
-      const mockPubRepo = {
+    test('addPubBeer method should throw HttpError with status 404 when beer is not found', async () => {
+      const mockPubRepo1 = {
         getById: jest
           .fn()
           .mockResolvedValue({ id: 'validPubID', beers: [], taps: 2 }),
       } as unknown as PubMongoRepo;
-      const mockBeerRepo = {
+      const mockBeerRepo1 = {
         getById: jest.fn().mockResolvedValue(null),
       } as unknown as BeerMongoRepo;
-      const controller = new PubController(mockPubRepo);
-      controller.beerRepo = mockBeerRepo;
+      const controller = new PubController(mockPubRepo1);
+      controller.beerRepo = mockBeerRepo1;
       await controller.addPubBeer(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
         new HttpError(404, 'Not Found', 'Beer not found')
@@ -228,17 +228,17 @@ describe('Given PubController class', () => {
         new HttpError(404, 'Not Found', 'Pub not found')
       );
     });
-    test('should throw HttpError with status 404 when beer is not found', async () => {
-      const mockPubRepo = {
+    test('removePubBeer method should throw HttpError with status 404 when beer is not found', async () => {
+      const mockPubRepo2 = {
         getById: jest
           .fn()
           .mockResolvedValue({ id: 'validPubID', beers: [], taps: 2 }),
       } as unknown as PubMongoRepo;
-      const mockBeerRepo = {
+      const mockBeerRepo2 = {
         getById: jest.fn().mockResolvedValue(null),
       } as unknown as BeerMongoRepo;
-      const controller = new PubController(mockPubRepo);
-      controller.beerRepo = mockBeerRepo;
+      const controller = new PubController(mockPubRepo2);
+      controller.beerRepo = mockBeerRepo2;
       await controller.removePubBeer(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
         new HttpError(404, 'Not Found', 'Beer not found')
