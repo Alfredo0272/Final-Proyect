@@ -5,19 +5,19 @@ import { BeerController } from './beer.controller';
 import { Request, Response, NextFunction } from 'express';
 
 describe('Given BeerController class', () => {
+  const mockRequest: Request = {
+    params: { id: 'validUserID' },
+    file: { path: 'validPath' },
+    body: { name: 'Beer Name' },
+  } as unknown as Request;
+  const mockResponse: Response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+    statusMessage: '',
+  } as unknown as Response;
+  const mockNext: NextFunction = jest.fn();
   describe('When we instantiate it without errors', () => {
     test('should create a beer with valid input data and image file', async () => {
-      const mockRequest: Request = {
-        params: { id: 'validUserID' },
-        file: { path: 'validPath' },
-        body: { name: 'Beer Name' },
-      } as unknown as Request;
-      const mockResponse: Response = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-        statusMessage: '',
-      } as unknown as Response;
-      const mockNext: NextFunction = jest.fn();
       const mockAuthor = { id: 'validUserID', name: 'Author Name' };
       const mockImgData = { url: 'validImageUrl' };
       const mockResult = {
@@ -63,12 +63,12 @@ describe('Given BeerController class', () => {
   });
   describe('When we instantiate it with errors', () => {
     test('should throw an error with status 404 when the user with the given ID does not exist', async () => {
-      const mockRequest: Request = {
+      const mockRequest2: Request = {
         params: { id: 'invalidUserID' },
         file: { path: 'validPath' },
         body: { name: 'Beer Name' },
       } as unknown as Request;
-      const mockResponse: Response = {
+      const mockResponse2: Response = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
         statusMessage: '',
@@ -83,7 +83,7 @@ describe('Given BeerController class', () => {
       const controller = new BeerController({} as BeerMongoRepo);
       controller.userRepo = mockUserRepo;
 
-      await controller.createBeer(mockRequest, mockResponse, mockNext);
+      await controller.createBeer(mockRequest2, mockResponse2, mockNext);
 
       expect(mockUserRepo.getById).toHaveBeenCalledWith('invalidUserID');
       expect(mockNext).toHaveBeenCalledWith(mockError);
