@@ -31,7 +31,7 @@ export const pubSchema = new Schema<Pub>({
   beers: [{ type: Schema.Types.ObjectId, ref: 'Beer' }],
 });
 
-export const PubModel = model('Pubs', pubSchema, 'Pub');
+export const PubModel = model('Pub', pubSchema, 'pub');
 
 pubSchema.set('toJSON', {
   transform(_document, returnedObject) {

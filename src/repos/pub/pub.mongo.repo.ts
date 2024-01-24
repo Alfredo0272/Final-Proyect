@@ -1,11 +1,11 @@
 import createDebug from 'debug';
-import { Beer } from '../../entities/beer.model';
-import { Pub } from '../../entities/pub.model';
-import { PubRepository } from './pub.repo';
-import { HttpError } from '../../types/http.error';
-import { PubModel } from './pub.mongo.model';
+import { Beer } from '../../entities/beer.model.js';
+import { Pub } from '../../entities/pub.model.js';
+import { PubRepository } from './pub.repo.js';
+import { HttpError } from '../../types/http.error.js';
+import { PubModel } from './pub.mongo.model.js';
 
-const debug = createDebug('W9Final:Users:mongo:repo');
+const debug = createDebug('W9Final:Pubs:mongo:repo');
 export class PubMongoRepo implements PubRepository<Pub, Beer> {
   constructor() {
     debug('instantiated');
@@ -68,13 +68,13 @@ export class PubMongoRepo implements PubRepository<Pub, Beer> {
   }
 
   async addBeer(beer: Beer, pubId: Pub['id']): Promise<Pub> {
-    const updatedUser = await PubModel.findByIdAndUpdate(
+    const updatedPub = await PubModel.findByIdAndUpdate(
       pubId,
       { $push: { beers: beer } },
       { new: true }
     ).exec();
 
-    if (!updatedUser) {
+    if (!updatedPub) {
       throw new HttpError(
         404,
         'Not Found in mongo repo',
@@ -82,20 +82,20 @@ export class PubMongoRepo implements PubRepository<Pub, Beer> {
       );
     }
 
-    return updatedUser;
+    return updatedPub;
   }
 
   async removeBeer(beer: Beer, pubId: Pub['id']): Promise<Pub> {
-    const updatedUser = await PubModel.findByIdAndUpdate(
+    const updatedPub = await PubModel.findByIdAndUpdate(
       pubId,
       { $pull: { beers: beer.id } },
       { new: true }
     ).exec();
 
-    if (!updatedUser) {
+    if (!updatedPub) {
       throw new HttpError(404, 'Not Found', 'Update not possible');
     }
 
-    return updatedUser;
+    return updatedPub;
   }
 }

@@ -1,9 +1,9 @@
 import createDebug from 'debug';
-import { Repository } from './beer.repo';
-import { UserMongoRepo } from '../user/user.mongo.repo';
-import { Beer } from '../../entities/beer.model';
-import { BeerModel } from './beer.mongo.model';
-import { HttpError } from '../../types/http.error';
+import { Repository } from './beer.repo.js';
+import { UserMongoRepo } from '../user/user.mongo.repo.js';
+import { Beer } from '../../entities/beer.model.js';
+import { BeerModel } from './beer.mongo.model.js';
+import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:Beer:mongo:repo');
 
@@ -15,14 +15,14 @@ export class BeerMongoRepo implements Repository<Beer> {
   }
 
   async getAll(): Promise<Beer[]> {
-    const result = await BeerModel.find().populate('author').exec();
+    const result = await BeerModel.find().populate('author', 'pubs').exec();
     if (!result)
       throw new HttpError(404, 'Not Found', 'Beer not found in file sistem');
     return result;
   }
 
   async getById(id: string): Promise<Beer> {
-    const data = await BeerModel.findById(id).populate('author').exec();
+    const data = await BeerModel.findById(id).populate('author', 'pubs').exec();
     if (!data) {
       throw new HttpError(404, 'Not Found', 'Beer not found in file sistem', {
         cause: 'trying findById',
@@ -42,6 +42,7 @@ export class BeerMongoRepo implements Repository<Beer> {
     const result = await BeerModel.find({ [key]: value })
       .populate('author', {
         user: 0,
+        pubs: 0,
       })
       .exec();
 
@@ -57,7 +58,7 @@ export class BeerMongoRepo implements Repository<Beer> {
     const result = await BeerModel.findByIdAndUpdate(id, updatedItem, {
       new: true,
     })
-      .populate('author', { id: 1 })
+      .populate('author', { id: 1 }, 'pubs', { id: 1 })
       .exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
 
@@ -66,7 +67,7 @@ export class BeerMongoRepo implements Repository<Beer> {
 
   async delete(id: string): Promise<void> {
     const result = await BeerModel.findByIdAndDelete(id)
-      .populate('author')
+      .populate('author', 'pubs')
       .exec();
     if (!result) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');

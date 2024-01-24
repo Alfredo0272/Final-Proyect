@@ -10,5 +10,5 @@ export type Beer = {
   alcohol: string;
   beerImg: ImgData;
   author: User;
-  pubs: Pub;
+  pubs: Pub[];
 };

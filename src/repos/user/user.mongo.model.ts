@@ -5,7 +5,7 @@ export const userSchema = new Schema<User>({
   name: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
   },
   password: {
     type: String,
@@ -14,7 +14,7 @@ export const userSchema = new Schema<User>({
   },
   userName: {
     type: String,
-    required: false,
+    required: true,
     unique: true,
   },
   email: {
@@ -30,7 +30,7 @@ export const userSchema = new Schema<User>({
   surname: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
   },
   role: {
     type: String,
@@ -51,4 +51,4 @@ userSchema.set('toJSON', {
   },
 });
 
-export const UserModel = model('Users', userSchema, 'user');
+export const UserModel = model('User', userSchema, 'user');

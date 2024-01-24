@@ -25,15 +25,9 @@ export const beerSchema = new Schema<Beer>({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: false,
-    unique: true,
   },
-  pubs: {
-    type: Schema.Types.ObjectId,
-    ref: 'Pub',
-    required: false,
-    unique: false,
-  },
+  pubs: [{ type: Schema.Types.ObjectId, ref: 'Pubs' }],
+
   beerImg: {
     publicId: String,
     size: Number,

@@ -16,10 +16,14 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
 
   async login(loginUser: UserLogin): Promise<User> {
     const result = await UserModel.findOne({ email: loginUser.email })
-      .populate('provadda', 'visitado')
+      .populate('probada', 'visitado')
       .exec();
     if (!result || !(await Auth.compare(loginUser.password, result.password)))
-      throw new HttpError(401, 'Unauthorized');
+      throw new HttpError(
+        401,
+        'No se puede hacer login con Token',
+        'Unauthorized'
+      );
     return result;
   }
 
@@ -97,6 +101,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   }
 
   async addBeer(beer: Beer, userId: string): Promise<User> {
+    console.log(beer);
+    console.log(userId);
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $push: { probada: beer } },
@@ -112,7 +118,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async addPub(pub: Pub, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { probada: pub } },
+      { $push: { visitado: pub } },
       { new: true }
     ).exec();
 
@@ -130,7 +136,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async removeBeer(beer: Beer, userId: User['id']): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $pull: { probada: beer.id } },
+      { $pull: { probada: beer } },
       { new: true }
     ).exec();
 
@@ -144,7 +150,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async removePub(pub: Pub, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $pull: { probada: pub.id } },
+      { $pull: { visitado: pub } },
       { new: true }
     ).exec();
 
