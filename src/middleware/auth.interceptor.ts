@@ -11,15 +11,15 @@ export class AuthInterceptor {
     debug('Instantiated');
   }
 
-  authorization(req: Request, res: Response, next: NextFunction) {
+  authorization(req: Request, _res: Response, next: NextFunction) {
     try {
       const tokenHeader = req.get('Authorization');
-      if (!tokenHeader?.startsWith('Bearer'))
-        throw new HttpError(401, 'Unauthorized');
+      if (!tokenHeader || !tokenHeader.startsWith('Bearer'))
+        throw new HttpError(401, 'Middleware says you are Unauthorized');
       const token = tokenHeader.split(' ')[1];
       const tokenPayload = Auth.verifyAndGetPayload(token);
       req.body.userId = tokenPayload.id;
-      req.body.tokenRole = tokenPayload.role;
+      req.body.role = tokenPayload.role;
       next();
     } catch (error) {
       next(error);
@@ -28,7 +28,7 @@ export class AuthInterceptor {
 
   isAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      if (req.body.tokenRole !== 'Admin')
+      if (req.body.role !== 'Admin')
         throw new HttpError(403, 'Forbidden', 'Not authorized');
       next();
     } catch (error) {

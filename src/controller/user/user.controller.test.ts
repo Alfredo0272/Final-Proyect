@@ -3,7 +3,7 @@ import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
 import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo';
 import { UserMongoRepo } from '../../repos/user/user.mongo.repo';
 import { HttpError } from '../../types/http.error';
-import { UsersController } from './user.controler';
+import { UsersController } from './user.controller';
 import { Request, Response, NextFunction } from 'express';
 
 jest.mock('../../services/auth');

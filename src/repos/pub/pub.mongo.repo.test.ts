@@ -78,7 +78,7 @@ describe('Given PubMongoRepo class', () => {
       PubModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(updatedPub),
       });
-      const result = await repo.addBeer(beer, id);
+      const result = await repo.addBeerToTap(beer, id);
       expect(result).toEqual(updatedPub);
     });
     test('should delete a beer fron the provadas array', async () => {
@@ -86,7 +86,7 @@ describe('Given PubMongoRepo class', () => {
       PubModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(updatedPub),
       });
-      const result = await repo.removeBeer(beer, id);
+      const result = await repo.removeBeerFromTap(beer, id);
       expect(result).toEqual(updatedPub);
     });
   });
@@ -137,12 +137,12 @@ describe('Given PubMongoRepo class', () => {
       await expect(repo.delete(id)).rejects.toThrow(HttpError);
     });
     test('should throw a 404 error if the user is not found in the database when we update the beers list', async () => {
-      await expect(repo.addBeer(beer, id)).rejects.toThrow(
+      await expect(repo.addBeerToTap(beer, id)).rejects.toThrow(
         new HttpError(404, 'Not Found in mongo repo', 'Update not possible')
       );
     });
     test('should throw a HttpError with status 404 when the removeBeer fails', async () => {
-      await expect(repo.removeBeer(beer, id)).rejects.toThrow(
+      await expect(repo.removeBeerFromTap(beer, id)).rejects.toThrow(
         new HttpError(404, 'Not Found in mongo repo', 'Update not possible')
       );
     });

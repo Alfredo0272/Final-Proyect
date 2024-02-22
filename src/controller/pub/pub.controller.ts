@@ -33,9 +33,8 @@ export class PubController extends Controller<Pub> {
 
   async addPubBeer(req: Request, res: Response, next: NextFunction) {
     try {
-      const pub = await this.repo.getById(req.body);
+      const pub = await this.repo.getById(req.body.id);
       const beer = await this.beerRepo.getById(req.params.id);
-
       if (!pub) {
         throw new HttpError(404, 'Not Found', 'Pub not found');
       }
@@ -52,7 +51,7 @@ export class PubController extends Controller<Pub> {
         throw new HttpError(400, 'Bad Request', 'The pub is at full capacity');
       }
 
-      const updatedPub = await this.repo.addBeer(beer, pub.id);
+      const updatedPub = await this.repo.addBeerToTap(beer, pub.id);
       await beer.pubs.push(pub);
       await this.beerRepo.update(beer.id, beer);
       if (!updatedPub) {
@@ -89,7 +88,7 @@ export class PubController extends Controller<Pub> {
       const beerPubs = beer.pubs.findIndex((item) => item.id === pub.id);
       beer.pubs.splice(beerPubs, 1);
       const updatedBeer = await this.beerRepo.update(beer.id, beer);
-      const result = await this.repo.removeBeer(beer, pub.id);
+      const result = await this.repo.removeBeerFromTap(beer, pub.id);
       res.json({ pub: result, beer: updatedBeer });
     } catch (error) {
       next(error);

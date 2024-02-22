@@ -1,3 +1,4 @@
+import { Pub } from '../../entities/pub.model';
 import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
 import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo';
 import { HttpError } from '../../types/http.error';
@@ -15,7 +16,7 @@ describe('Given PubController class', () => {
     mockRequest = {
       params: { id: 'validBeerID' },
       file: { path: 'validPath' },
-      body: { id: 'validPubID' },
+      body: { id: 'validPubID' } as unknown as Pub,
     } as unknown as Request;
 
     mockResponse = {
@@ -44,8 +45,8 @@ describe('Given PubController class', () => {
       getById: jest.fn().mockResolvedValue(mockPub),
       create: jest.fn().mockResolvedValue({}),
       createPub: jest.fn().mockResolvedValue(mockResult),
-      addBeer: jest.fn().mockResolvedValue(mockUpdatedPub),
-      removeBeer: jest.fn().mockResolvedValue(mockPub),
+      addBeerToTap: jest.fn().mockResolvedValue(mockUpdatedPub),
+      removeBeerFromTap: jest.fn().mockResolvedValue(mockPub),
     } as unknown as jest.Mocked<PubMongoRepo>;
     controller = new PubController(mockRepo);
     controller.cloudinaryService = mockCloudinaryService;
@@ -68,12 +69,12 @@ describe('Given PubController class', () => {
 
       await controller.addPubBeer(mockRequest, mockResponse, mockNext);
 
-      expect(mockRepo.getById).toHaveBeenCalledWith({
-        id: 'validPubID',
-        logo: { url: 'validImageUrl' },
-      });
+      expect(mockRepo.getById).toHaveBeenCalledWith('validPubID');
       expect(mockBeerRepo.getById).toHaveBeenCalledWith('validBeerID');
-      expect(mockRepo.addBeer).toHaveBeenCalledWith(mockBeer, 'validPubID');
+      expect(mockRepo.addBeerToTap).toHaveBeenCalledWith(
+        mockBeer,
+        'validPubID'
+      );
       expect(mockBeerRepo.update).toHaveBeenCalledWith('validBeerID', mockBeer);
       expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedPub);
     });
@@ -85,7 +86,7 @@ describe('Given PubController class', () => {
 
       const mockRepo = {
         getById: jest.fn().mockResolvedValueOnce(mockUpdatedPub),
-        removeBeer: jest.fn().mockResolvedValueOnce({}),
+        removeBeerFromTap: jest.fn().mockResolvedValueOnce({}),
       } as unknown as jest.Mocked<PubMongoRepo>;
 
       const controller = new PubController(mockRepo);
@@ -95,7 +96,10 @@ describe('Given PubController class', () => {
 
       expect(mockRepo.getById).toHaveBeenCalledWith('validPubID');
       expect(mockBeerRepo.getById).toHaveBeenCalledWith('validBeerID');
-      expect(mockRepo.removeBeer).toHaveBeenCalledWith(mockBeer, 'validPubID');
+      expect(mockRepo.removeBeerFromTap).toHaveBeenCalledWith(
+        mockBeer,
+        'validPubID'
+      );
       expect(mockBeerRepo.update).toHaveBeenCalledWith('validBeerID', mockBeer);
     });
   });
@@ -201,7 +205,7 @@ describe('Given PubController class', () => {
       const mockNext = jest.fn();
       const mockPubRepo = {
         getById: jest.fn().mockResolvedValue(mockPub),
-        addBeer: jest.fn().mockResolvedValue(null),
+        addBeerToTap: jest.fn().mockResolvedValue(null),
       } as unknown as PubMongoRepo;
       const mockBeerRepo = {
         getById: jest.fn().mockResolvedValue(mockBeer),

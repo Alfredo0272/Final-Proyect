@@ -1,11 +1,11 @@
-import { Repository } from '../repos/beer/beer.repo.js';
+import { BeerRepository } from '../repos/beer/beer.repo.js';
 import { NextFunction, Request, Response } from 'express';
 import { MediaFiles } from '../services/media.file.js';
 
 export abstract class Controller<X extends { id: unknown }> {
   cloudinaryService: MediaFiles;
   // eslint-disable-next-line no-unused-vars
-  constructor(protected repo: Repository<X>) {
+  constructor(protected repo: BeerRepository<X>) {
     this.cloudinaryService = new MediaFiles();
   }
 

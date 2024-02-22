@@ -16,9 +16,18 @@ La aplicación proporciona un sistema de registro y login para que los usuarios 
 
 Los usuarios acceden a todas las cervezas subidas por la comunidad, donde podran seleccionar la que han probado
 
+-Listado de Pubs
+
+Los usuarios acceden a todas los pubs que han visitado, los pubs que quieran aparecer deben solicitar una cuenta al admin para que se la cree.
+
+-Listado de Cervezas en el Pub
+
+Los Pubs pueden añadir cervezas a su lista de Taps, tantas como Taps tengan, asi como elimnarla de su lista para ir rotanto.
+
 -Detalles del producto
 
-Clicando en la imagen los usuarios acederan a los detalles de la misma con una mejor disposicion de los datos y los botones que le permiten agregar la cerveza a su cuenta
+Clicando en la imagen los usuarios acederan a los detalles de la misma con una mejor disposicion de los datos y los botones que le permiten agregar la cerveza a su cuenta.
+Los Pubs pueden agregar cerveza desde la pagina de detalles de cada cerveza.
 
 ### Tecnologia Empleada
 
@@ -44,11 +53,11 @@ Configuración del Frontend:
 
 1º Clone el repositorio:
 
-`https://github.com/isdi-coders-2023/Alfredo-Lozano-Final-Project-front-202309-mad.git`
+`https://github.com/Alfredo0272/Final-Proyect-Back.git`
 
 2º Navegue al directorio del proyecto:
 
-`cd Alfredo-Lozano-Final-Project-front-202309-mad`
+`cd New-Final-Project-front-202309-mad`
 
 3º Instale las dependencias:
 
@@ -70,6 +79,8 @@ Con estos pasos, el frontend estará configurado y en ejecución.
 | GET    | /users/:id       | Obtener un usuario por su ID. (Solo puede realizarlo el administrador)         |
 | PATCH  | user/addBeer/:id | añade una cerveza a tu array de cervezas probadas                              |
 | PATCH  | user/delBeer/:id | elimina una cerveza de tu array de cervezas probadas                           |
+| PATCH  | user/addPub/:id  | añade un pub a tu array de pubs visitados                                      |
+| PATCH  | user/delPub/:id  | elimina un pub a tu array de pubs visitados                                    |
 
 ### Beer
 
@@ -78,5 +89,14 @@ Con estos pasos, el frontend estará configurado y en ejecución.
 | GET    | /beer     | Obtener la lista de cervezas disponibles.                                        |
 | GET    | /beer/:id | Obtener información detallada sobre una cerveza específica.                      |
 | POST   | /beer/:id | Agregar una nueva cerveza a la colección.                                        |
-| PATCH  | /beer/:id | Actualizar detalles de una prenda existente. Requiere derechos de administrador. |
-|  |
+| DELETE | /beer/:id | Elimina una cerveza de la base de datos (Solo puede realizarlo el administrador) |
+
+### Pubs
+
+| Método | URL             | Descripción                                                                     |
+| ------ | --------------- | ------------------------------------------------------------------------------- |
+| POST   | /pub/create     | Registrar un nuevo pub con campos obligatorios.                                 |
+| GET    | /pub/           | Obtener una lista de pubs                                                       |
+| GET    | /pub/:id        | Obtener un pub por su ID.                                                       |
+| PATCH  | pub/addBeer/:id | añade una cerveza a su lista de taps (Solo puede realizarlo el administrador)   |
+| PATCH  | pub/delBeer/:id | elimina una cerveza a su lista de taps (Solo puede realizarlo el administrador) |

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-export interface Repository<X extends { id: unknown }> {
+export interface BeerRepository<X extends { id: unknown }> {
   getAll(): Promise<X[]>;
   getById(_id: X['id']): Promise<X>;
   search({ key, value }: { key: keyof X; value: unknown }): Promise<X[]>;

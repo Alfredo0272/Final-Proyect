@@ -3,6 +3,7 @@ import createDebug from 'debug';
 import { BeerMongoRepo } from '../repos/beer/beer.mongo.repo.js';
 import { BeerController } from '../controller/beer/beer.controller.js';
 import { FileInterceptor } from '../middleware/file.interceptor.js';
+import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 // Import { Interceptor } from '../middleware/auth.interceptor.js';
 
 const debug = createDebug('W9Final:beer:router');
@@ -13,7 +14,7 @@ debug('Starting');
 const repo = new BeerMongoRepo();
 const controller = new BeerController(repo);
 const fileInterceptor = new FileInterceptor();
-// Const interceptor = new Interceptor();
+const interceptor = new AuthInterceptor();
 
 beerRouter.post(
   '/:id',
@@ -33,6 +34,7 @@ beerRouter.get(
 
 beerRouter.delete(
   '/delBeer/:id',
-  fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
+  interceptor.authorization.bind(interceptor),
+  interceptor.isAdmin.bind(interceptor),
   controller.delete.bind(controller)
 );

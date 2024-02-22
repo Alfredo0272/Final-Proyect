@@ -24,8 +24,6 @@ pubRouter.post(
 
 pubRouter.get(
   '/',
-  interceptor.authorization.bind(interceptor),
-  interceptor.isAdmin.bind(interceptor),
   fileInterceptor.singleFileStore('logo').bind(fileInterceptor),
   controller.getAll.bind(controller)
 );
@@ -38,13 +36,13 @@ pubRouter.get(
 
 pubRouter.patch(
   '/addBeer/:id',
-  interceptor.authorization.bind(interceptor),
-  interceptor.isAdmin.bind(interceptor),
+  // Interceptor.authorization.bind(interceptor),
+  // interceptor.isAdmin.bind(interceptor),
   controller.addPubBeer.bind(controller)
 );
 
 pubRouter.patch(
-  '/addBeer/:id',
+  '/delBeer/:id',
   interceptor.authorization.bind(interceptor),
   interceptor.isAdmin.bind(interceptor),
   controller.removePubBeer.bind(controller)
