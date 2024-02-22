@@ -9,6 +9,6 @@ export interface PubRepository<
   create(_newItem: Omit<X, 'id'>): Promise<X>;
   update(_id: X['id'], _updatedItem: Partial<X>): Promise<X>;
   delete(id: X['id']): Promise<void>;
-  addBeer(_beer: Y, _userId: X['id']): Promise<X>;
-  removeBeer(_beer: Y, _userId: X['id']): Promise<X>;
+  addBeerToTap(_beer: Y, _pubId: X['id']): Promise<X>;
+  removeBeerFromTap(_beer: Y, _pubId: X['id']): Promise<X>;
 }

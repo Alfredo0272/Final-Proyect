@@ -38,8 +38,8 @@ export const userSchema = new Schema<User>({
     enum: ['Admin', 'User'],
     default: 'User',
   },
-  probada: [{ type: Schema.Types.ObjectId, ref: 'Beer', required: false }],
-  visitado: [{ type: Schema.Types.ObjectId, ref: 'Pub', required: false }],
+  probada: [{ type: Schema.Types.ObjectId, ref: 'Beer' }],
+  visitado: [{ type: Schema.Types.ObjectId, ref: 'Pub' }],
 });
 
 userSchema.set('toJSON', {

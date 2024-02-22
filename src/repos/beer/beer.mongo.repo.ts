@@ -1,16 +1,13 @@
 import createDebug from 'debug';
-import { Repository } from './beer.repo.js';
-import { UserMongoRepo } from '../user/user.mongo.repo.js';
+import { BeerRepository } from './beer.repo.js';
 import { Beer } from '../../entities/beer.model.js';
 import { BeerModel } from './beer.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:Beer:mongo:repo');
 
-export class BeerMongoRepo implements Repository<Beer> {
-  userRepo: UserMongoRepo;
+export class BeerMongoRepo implements BeerRepository<Beer> {
   constructor() {
-    this.userRepo = new UserMongoRepo();
     debug('instantiated');
   }
 
@@ -40,12 +37,8 @@ export class BeerMongoRepo implements Repository<Beer> {
     value: any;
   }): Promise<Beer[]> {
     const result = await BeerModel.find({ [key]: value })
-      .populate('author', {
-        user: 0,
-        pubs: 0,
-      })
+      .populate('author', { user: 0 }, 'pubs', { pub: 0 })
       .exec();
-
     return result;
   }
 
@@ -58,7 +51,8 @@ export class BeerMongoRepo implements Repository<Beer> {
     const result = await BeerModel.findByIdAndUpdate(id, updatedItem, {
       new: true,
     })
-      .populate('author', { id: 1 }, 'pubs', { id: 1 })
+      .populate('author', { id: 0 })
+      .populate('pubs', { id: 0 })
       .exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
 

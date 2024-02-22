@@ -1,6 +1,6 @@
 import { Router as createRouter } from 'express';
 import createDebug from 'debug';
-import { UsersController } from '../controller/user/user.controler.js';
+import { UsersController } from '../controller/user/user.controller.js';
 import { UserMongoRepo } from '../repos/user/user.mongo.repo.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 
@@ -18,6 +18,7 @@ userRouter.patch(
   controller.login.bind(controller)
 );
 userRouter.post('/register', controller.create.bind(controller));
+
 userRouter.patch(
   '/addBeer/:id',
   interceptor.authorization.bind(interceptor),

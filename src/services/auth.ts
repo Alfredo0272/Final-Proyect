@@ -1,7 +1,6 @@
 import { hash, compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-
 import createDebug from 'debug';
 import { HttpError } from '../types/http.error.js';
 import { TokenPayload } from '../types/token.payload.js';
@@ -28,10 +27,10 @@ export abstract class Auth {
     try {
       const result = jwt.verify(token, Auth.secret!);
       if (typeof result === 'string')
-        throw new HttpError(498, 'Invalid token', result);
+        throw new HttpError(498, 'Invalid Token', result);
       return result as TokenPayload;
     } catch (error) {
-      throw new HttpError(498, 'Invalid token', (error as Error).message);
+      throw new HttpError(498, 'Invalid Token', (error as Error).message);
     }
   }
 }

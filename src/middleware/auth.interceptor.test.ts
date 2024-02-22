@@ -46,10 +46,11 @@ describe('Given AuthInterceptor class', () => {
 
   describe('When we use isAdmin method', () => {
     test('Then should call next when tokenRole is "Admin"', () => {
-      const req = { body: { tokenRole: 'Admin' } } as Request;
+      const req = { body: { role: 'Admin' } } as Request;
       const res = {} as Response;
       const next = jest.fn() as NextFunction;
 
+      const authInterceptor = new AuthInterceptor();
       authInterceptor.isAdmin(req, res, next);
 
       expect(next).toHaveBeenCalled();

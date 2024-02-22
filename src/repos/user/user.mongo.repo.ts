@@ -101,11 +101,9 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   }
 
   async addBeer(beer: Beer, userId: string): Promise<User> {
-    console.log(beer);
-    console.log(userId);
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { probada: beer } },
+      { $push: { probada: beer.id } },
       { new: true }
     ).exec();
     if (!updatedUser) {
@@ -118,7 +116,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async addPub(pub: Pub, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { visitado: pub } },
+      { $push: { visitado: pub.id } },
       { new: true }
     ).exec();
 
@@ -133,10 +131,10 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
     return updatedUser;
   }
 
-  async removeBeer(beer: Beer, userId: User['id']): Promise<User> {
+  async removeBeer(beer: Beer, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $pull: { probada: beer } },
+      { $pull: { probada: beer.id } },
       { new: true }
     ).exec();
 
@@ -150,7 +148,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async removePub(pub: Pub, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $pull: { visitado: pub } },
+      { $pull: { visitado: pub.id } },
       { new: true }
     ).exec();
 

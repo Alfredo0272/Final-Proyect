@@ -67,10 +67,10 @@ export class PubMongoRepo implements PubRepository<Pub, Beer> {
       });
   }
 
-  async addBeer(beer: Beer, pubId: Pub['id']): Promise<Pub> {
+  async addBeerToTap(beer: Beer, pubId: Pub['id']): Promise<Pub> {
     const updatedPub = await PubModel.findByIdAndUpdate(
       pubId,
-      { $push: { beers: beer } },
+      { $push: { beers: beer.id } },
       { new: true }
     ).exec();
 
@@ -85,7 +85,7 @@ export class PubMongoRepo implements PubRepository<Pub, Beer> {
     return updatedPub;
   }
 
-  async removeBeer(beer: Beer, pubId: Pub['id']): Promise<Pub> {
+  async removeBeerFromTap(beer: Beer, pubId: Pub['id']): Promise<Pub> {
     const updatedPub = await PubModel.findByIdAndUpdate(
       pubId,
       { $pull: { beers: beer.id } },

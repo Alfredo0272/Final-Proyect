@@ -31,7 +31,9 @@ describe('Given BeerMongoRepo class', () => {
       BeerModel.create = jest.fn().mockReturnValue(beer);
       BeerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
-          exec,
+          populate: jest.fn().mockReturnValue({
+            exec,
+          }),
         }),
       });
       BeerModel.findByIdAndDelete = jest.fn().mockReturnValue({
@@ -89,7 +91,9 @@ describe('Given BeerMongoRepo class', () => {
       BeerModel.create = jest.fn().mockReturnValue(beer);
       BeerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
-          exec,
+          populate: jest.fn().mockReturnValue({
+            exec,
+          }),
         }),
       });
       BeerModel.findByIdAndDelete = jest.fn().mockReturnValue({
