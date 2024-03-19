@@ -1,12 +1,12 @@
 import createDebug from 'debug';
-import { BeerRepository } from './beer.repo.js';
+import { Repository } from './beer.repo.js';
 import { Beer } from '../../entities/beer.model.js';
 import { BeerModel } from './beer.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:Beer:mongo:repo');
 
-export class BeerMongoRepo implements BeerRepository<Beer> {
+export class BeerMongoRepo implements Repository<Beer> {
   constructor() {
     debug('instantiated');
   }
