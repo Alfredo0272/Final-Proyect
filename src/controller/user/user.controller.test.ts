@@ -17,7 +17,7 @@ describe('Given UserController class', () => {
 
   beforeAll(() => {
     mockRequest = {
-      body: { id: 'validUserId' },
+      body: { userId: 'validUserId' },
       params: { id: 'validBeerId' },
       query: { key: 'value' },
     } as unknown as Request;
@@ -101,7 +101,7 @@ describe('Given UserController class', () => {
     test("should add a beer to a user's tasted beers list when the beer and user exist and the beer is not already in the user's tasted beers list", async () => {
       const mockUser = { id: 'validUserID', probada: [] };
       const mockBeer = { id: 'validBeerID' };
-      const mockUpdatedUser = { id: 'validUserID', probada: [mockBeer] };
+      const mockUpdatedUser = { userId: 'validUserID', probada: [mockBeer] };
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockUser),
         addBeer: jest.fn().mockResolvedValue(mockUpdatedUser),
@@ -122,7 +122,7 @@ describe('Given UserController class', () => {
     test("should add a pub to a user's visited beers list when the pub and user exist and the pub is not already in the user's visited pub list", async () => {
       const mockUser = { id: 'validUserID', visitado: [] };
       const mockPub = { id: 'validpubID' };
-      const mockUpdatedUser = { id: 'validpubID', visitado: [mockPub] };
+      const mockUpdatedUser = { userId: 'validpubID', visitado: [mockPub] };
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockUser),
         addPub: jest.fn().mockResolvedValue(mockUpdatedUser),
@@ -141,7 +141,7 @@ describe('Given UserController class', () => {
     test('should successfully remove a beer from a users tasted beers list when the beer and user exist and the beer is in the users tasted beers list', async () => {
       const mockBeer = { id: 'validBeerID' };
       const mockUser = { id: 'validUserID', probada: [mockBeer] };
-      const mockUpdatedUser = { id: 'validUserID', probada: [] };
+      const mockUpdatedUser = { userId: 'validUserID', probada: [] };
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockUser),
         removeBeer: jest.fn().mockResolvedValueOnce(mockUpdatedUser),
@@ -160,7 +160,7 @@ describe('Given UserController class', () => {
     test('should successfully remove a pub from a users visited pubs list when the pub and user exist and the pub is in the users visited pub list', async () => {
       const mockPub = { id: 'validpubID' };
       const mockUser = { id: 'validUserID', visitado: [mockPub] };
-      const mockUpdatedUser = { id: 'validUserID', visitado: [] };
+      const mockUpdatedUser = { userId: 'validUserID', visitado: [] };
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockUser),
         removePub: jest.fn().mockResolvedValue(mockUpdatedUser),
@@ -254,7 +254,7 @@ describe('Given UserController class', () => {
     });
     test("addBeer should throw HttpError with status 409 if beer is already in user's tasted beers list", async () => {
       const mockUser = {
-        id: 'validUserID',
+        userId: 'validUserID',
         probada: [{ id: 'existingBeerID' }],
       };
       const mockBeer = { id: 'existingBeerID' };
@@ -283,7 +283,7 @@ describe('Given UserController class', () => {
     });
     test('addBeer should throw an HttpError with status 404 and message "Update not possible" when the update fails', async () => {
       const mockUser = {
-        id: 'validUserId',
+        userId: 'validUserId',
         probada: [{ id: 'existingBeerId' }],
       };
       const mockBeer = { id: 'validBeerId' };
