@@ -30,6 +30,18 @@ userRouter.patch(
   controller.removeBeer.bind(controller)
 );
 
+userRouter.patch(
+  '/addPub/:id',
+  interceptor.authorization.bind(interceptor),
+  controller.addPub.bind(controller)
+);
+
+userRouter.patch(
+  '/delPub/:id',
+  interceptor.authorization.bind(interceptor),
+  controller.removePub.bind(controller)
+);
+
 userRouter.get(
   '/:id',
   interceptor.authorization.bind(interceptor),
