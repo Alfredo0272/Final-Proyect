@@ -37,8 +37,8 @@ pubRouter.get(
 
 pubRouter.patch(
   '/addBeer/:id',
-  // Interceptor.authorization.bind(interceptor),
-  // interceptor.isAdmin.bind(interceptor),
+  interceptor.authorization.bind(interceptor),
+  interceptor.isAdmin.bind(interceptor),
   controller.addPubBeer.bind(controller)
 );
 
