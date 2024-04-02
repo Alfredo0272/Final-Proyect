@@ -1,25 +1,27 @@
 import createDebug from 'debug';
-import { BeerRepository } from './beer.repo.js';
+import { Repository } from './beer.repo.js';
 import { Beer } from '../../entities/beer.model.js';
 import { BeerModel } from './beer.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:Beer:mongo:repo');
 
-export class BeerMongoRepo implements BeerRepository<Beer> {
+export class BeerMongoRepo implements Repository<Beer> {
   constructor() {
     debug('instantiated');
   }
 
   async getAll(): Promise<Beer[]> {
-    const result = await BeerModel.find().populate('author', 'pubs').exec();
+    const result = await BeerModel.find().populate(['author', 'pubs']).exec();
     if (!result)
       throw new HttpError(404, 'Not Found', 'Beer not found in file sistem');
     return result;
   }
 
   async getById(id: string): Promise<Beer> {
-    const data = await BeerModel.findById(id).populate('author', 'pubs').exec();
+    const data = await BeerModel.findById(id)
+      .populate(['author', 'pubs'])
+      .exec();
     if (!data) {
       throw new HttpError(404, 'Not Found', 'Beer not found in file sistem', {
         cause: 'trying findById',
