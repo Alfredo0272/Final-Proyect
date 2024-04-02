@@ -31,6 +31,7 @@ pubRouter.get(
 pubRouter.get(
   '/:id',
   fileInterceptor.singleFileStore('logo').bind(fileInterceptor),
+  fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.getById.bind(controller)
 );
 
