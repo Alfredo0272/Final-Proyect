@@ -1,3 +1,4 @@
+import { Pub } from '../../entities/pub.model';
 import { User } from '../../entities/user.model';
 import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
 import { PubMongoRepo } from '../../repos/pub/pub.mongo.repo';
@@ -158,22 +159,29 @@ describe('Given UserController class', () => {
       expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
     });
     test('should successfully remove a pub from a users visited pubs list when the pub and user exist and the pub is in the users visited pub list', async () => {
-      const mockPub = { id: 'validpubID' };
+      const mockPub = { id: 'validpubID' } as Pub;
       const mockUser = { id: 'validUserID', visitado: [mockPub] };
       const mockUpdatedUser = { userId: 'validUserID', visitado: [] };
+      const mockRequest2 = {
+        body: { userId: 'validUserID' },
+        params: { id: mockPub.id },
+      } as unknown as Request;
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockUser),
         removePub: jest.fn().mockResolvedValue(mockUpdatedUser),
-      } as unknown as jest.Mocked<UserMongoRepo>;
+      } as unknown as UserMongoRepo;
       const mockPubRepo = {
-        getById: jest.fn().mockResolvedValue(mockPub),
+        getById: jest.fn().mockResolvedValue(mockPub.id),
       } as unknown as PubMongoRepo;
       const controller = new UsersController(mockRepo);
       controller.pubRepo = mockPubRepo;
 
-      await controller.removePub(mockRequest, mockResponse, mockNext);
-      expect(mockRepo.getById).toHaveBeenCalledWith('validUserId');
-      expect(mockRepo.removePub).toHaveBeenCalledWith(mockPub, 'validUserID');
+      await controller.removePub(mockRequest2, mockResponse, mockNext);
+      expect(mockRepo.getById).toHaveBeenCalledWith('validUserID');
+      expect(mockRepo.removePub).toHaveBeenCalledWith(
+        mockPub.id,
+        'validUserID'
+      );
       expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
     });
   });
