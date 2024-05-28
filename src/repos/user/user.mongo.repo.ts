@@ -16,7 +16,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
 
   async login(loginUser: UserLogin): Promise<User> {
     const result = await UserModel.findOne({ email: loginUser.email })
-      .populate('probada', 'visitado')
+      .populate('probada')
+      .populate('visitado')
       .exec();
     if (!result || !(await Auth.compare(loginUser.password, result.password)))
       throw new HttpError(
@@ -35,7 +36,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
 
   async getAll(): Promise<User[]> {
     const result = await UserModel.find()
-      .populate('probada', 'visitado')
+      .populate('probada', '-beer')
+      .populate('visitado', '-pub')
       .exec();
     if (!result)
       throw new HttpError(404, 'Not Found', 'getAll method not possible');
@@ -44,7 +46,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
 
   async getById(id: string): Promise<User> {
     const data = await UserModel.findById(id)
-      .populate('probada', 'visitado')
+      .populate('probada', '-beer')
+      .populate('visitado', '-pub')
       .exec();
     if (!data) {
       throw new HttpError(404, 'Not Found', 'User not found in file system', {
@@ -64,7 +67,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   }): Promise<User[]> {
     const result = await UserModel.find({ [key]: value })
       .populate(
-        'probada',
+        'probada ',
         {
           beer: 0,
         },
@@ -82,7 +85,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
     const data = await UserModel.findByIdAndUpdate(id, newData, {
       new: true,
     })
-      .populate('probada', 'visitado')
+      .populate('probada')
+      .populate('visitado')
       .exec();
     if (!data)
       throw new HttpError(404, 'Not Found', 'User not found in file system', {
@@ -93,7 +97,8 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
 
   async delete(id: string): Promise<void> {
     const result = await UserModel.findByIdAndDelete(id)
-      .populate('probada', 'visitado')
+      .populate('probada')
+      .populate('visitado')
       .exec();
     if (!result) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');
@@ -103,7 +108,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async addBeer(beer: Beer, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { probada: beer.id } },
+      { $push: { probada: beer } },
       { new: true }
     ).exec();
     if (!updatedUser) {
@@ -116,7 +121,7 @@ export class UserMongoRepo implements UserRepository<User, Beer, Pub> {
   async addPub(pub: Pub, userId: string): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { visitado: pub.id } },
+      { $push: { visitado: pub } },
       { new: true }
     ).exec();
 
