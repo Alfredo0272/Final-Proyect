@@ -48,6 +48,7 @@ export class UsersController extends Controller<User> {
     try {
       const user = await this.repo.getById(req.body.userId);
       const beer = await this.beerRepo.getById(req.params.id);
+      console.log('controller', beer);
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
@@ -69,6 +70,8 @@ export class UsersController extends Controller<User> {
       if (!updatedUser) {
         throw new HttpError(404, 'Not Found', 'Update not possible');
       }
+
+      console.log('controller', updatedUser);
 
       res.json(updatedUser);
     } catch (error) {
