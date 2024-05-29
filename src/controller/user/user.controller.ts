@@ -153,7 +153,7 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Pub not found');
       }
 
-      if (!user.visitado.find((visitedPub) => visitedPub.id !== pub.id)) {
+      if (!user.visitado.find((visitedPub) => visitedPub.id === pub.id)) {
         throw new HttpError(
           404,
           'Pub Found',

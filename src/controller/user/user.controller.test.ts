@@ -164,24 +164,21 @@ describe('Given UserController class', () => {
       const mockUpdatedUser = { userId: 'validUserID', visitado: [] };
       const mockRequest2 = {
         body: { userId: 'validUserID' },
-        params: { id: mockPub.id },
+        params: { id: 'validpubID' },
       } as unknown as Request;
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockUser),
         removePub: jest.fn().mockResolvedValue(mockUpdatedUser),
       } as unknown as UserMongoRepo;
       const mockPubRepo = {
-        getById: jest.fn().mockResolvedValue(mockPub.id),
+        getById: jest.fn().mockResolvedValue(mockPub),
       } as unknown as PubMongoRepo;
       const controller = new UsersController(mockRepo);
       controller.pubRepo = mockPubRepo;
 
       await controller.removePub(mockRequest2, mockResponse, mockNext);
       expect(mockRepo.getById).toHaveBeenCalledWith('validUserID');
-      expect(mockRepo.removePub).toHaveBeenCalledWith(
-        mockPub.id,
-        'validUserID'
-      );
+      expect(mockRepo.removePub).toHaveBeenCalledWith(mockPub, 'validUserID');
       expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
     });
   });
