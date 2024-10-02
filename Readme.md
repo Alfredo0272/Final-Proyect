@@ -57,7 +57,7 @@ Configuración del Frontend:
 
 2º Navegue al directorio del proyecto:
 
-`cd New-Final-Project-front-202309-mad`
+`cd Final-Proyect-Back`
 
 3º Instale las dependencias:
 
